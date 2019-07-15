@@ -12,13 +12,11 @@ class Autoload
     public function loadClass($className){
 
 
-        foreach($this->dir as $dir){
-            $file = "../{$dir}/{$className}.php";
+        $file = str_replace(['App\\', '\\'], ['../', '/'], $className).'.php';
 
-            if(file_exists($file)){
-                include $file;
-                break;
-            }
+        //var_dump($file);
+        if(file_exists($file)){
+            include $file;
         }
 
     }

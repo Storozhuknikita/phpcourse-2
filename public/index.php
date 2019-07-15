@@ -1,4 +1,7 @@
 <?php
+
+
+error_reporting(E_ALL && E_NOTICE);
 /**
  * 1) Корневой namespace: (App) \service\autoload; Соответствует структуре каталогов
  * 2) Переписать autoload без файлов
@@ -11,9 +14,20 @@
  * 4) *Реализовать паттерн Singleton при помощи traits.
  */
 
+function debug($text){
+    echo '<pre>'; print_r($text); echo '</pre>';
+}
+
+
+use \App\models\User;
+use \App\models\Good;
+use \App\services\BD;
+
 include '../services/Autoload.php';
 
 spl_autoload_register([new Autoload(),'loadClass']);
 
-$user = new User(new BD());
-$user->getOne(12);
+$user = new User();
+echo debug($user);
+
+debug($user->getProperties());

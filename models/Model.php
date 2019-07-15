@@ -1,56 +1,46 @@
 <?php
 
-abstract class Model
-{
+namespace App\models;
+
+use App\services\BD;
+use App\services\IBD;
+
+/**
+ * Class Model
+ * @package App\models
+ */
+abstract class Model {
+
     /**
-     * @var BD Класс для работы с базой данных
+     * @var mixed
      */
     protected $bd;
 
-    public function __construct(IBD $bd)
+    /**
+     * Model constructor.
+     */
+    public function __construct()
     {
-        $this->bd = $bd;
+        $this->bd = BD::getInstance();
     }
 
     /**
-     * Данный метод должен вернуть название таблицы
      * @return mixed
      */
     abstract protected function getTableName();
 
-    /**
-     * Данный метод возвращает пользователя
-     * @param int $id
-     * @return array
-     */
-    public function getOne($id)
-    {
+    public function getOne($id){
         $tableName = $this->getTableName();
-        $sql = "select * from {$tableName} where id = {$id}";
-        $this->bd->find($sql);
-        return [];
+        $sql = "SELECT * FROM ($tableName) WHERE user_id = :user_id";
+        return $this->bd->find($sql, [':id' => $id]);
     }
 
-    /**
-     * @return BD
-     */
-    public function getAll()
-    {
+    public function getAll(){
         $tableName = $this->getTableName();
-        $sql = "select * from {$tableName}";
-        $this->bd->findAll($sql);
-        return [];
+        $sql = "SELECT * FROM ($tableName)";
+        return $this->bd->findAll($sql);
     }
 
-    /**
-     * @return BD
-     */
-    public function getCount()
-    {
-        $tableName = $this->getTableName();
-        $sql = "select * from {$tableName}";
-        $this->bd->getCount($sql);
-        return [];
-    }
+
 
 }

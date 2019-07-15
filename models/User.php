@@ -1,10 +1,9 @@
 <?php
 
+namespace App\models;
 
 class User extends Model
 {
-
-    use CalcRows;
 
     public $id;
     public $name;
@@ -16,4 +15,15 @@ class User extends Model
         return 'users';
         // TODO: Implement getTableName() method.
     }
+
+    public function getProperties(){
+        $properties = [];
+        foreach($this as $key => $value){
+            $properties[] = $key;
+        }
+
+        return $properties;
+    }
+
+
 }

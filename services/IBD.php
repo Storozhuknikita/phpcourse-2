@@ -1,5 +1,6 @@
 <?php
 
+namespace App\services;
 
 interface IBD {
 
