@@ -1,23 +1,17 @@
 <?php
 
-
-error_reporting(E_ALL && E_NOTICE);
 /**
- * 1) Корневой namespace: (App) \service\autoload; Соответствует структуре каталогов
- * 2) Переписать autoload без файлов
- * 3) Создать структуру классов ведения товарной номенклатуры.
-        а) Есть абстрактный товар.
-        б) Есть цифровой товар, штучный физический товар и товар на вес.
-        в) У каждого есть метод подсчета финальной стоимости.
-        г) У цифрового товара стоимость постоянная – дешевле штучного товара в два раза. У штучного товара обычная стоимость, у весового – в зависимости от продаваемого количества в килограммах. У всех формируется в конечном итоге доход с продаж.
-        д) Что можно вынести в абстрактный класс, наследование?
- * 4) *Реализовать паттерн Singleton при помощи traits.
+ * Homework 3
+ * 1. Почитать про паттерны проектирования.
+ * 2. В результате поиска одной записи возвращать объект с заполненными данными, а в результате поиска всех записей - массив из таких объектов.
+ * 3. Реализовать CRUD.
+ * 4. Объединить методы update и insert в метод save.
  */
+error_reporting(E_ALL && E_NOTICE);
 
 function debug($text){
     echo '<pre>'; print_r($text); echo '</pre>';
 }
-
 
 use \App\models\User;
 use \App\models\Good;
@@ -28,6 +22,20 @@ include '../services/Autoload.php';
 spl_autoload_register([new Autoload(),'loadClass']);
 
 $user = new User();
-echo debug($user);
 
-debug($user->getProperties());
+$users = $user->getAll();
+
+foreach ($users as $row) {
+    echo 'UserId: '.$row['user_id'].'<br/>';
+    echo 'User Name: '.$row['user_name'].'<br/>';
+    echo 'User Login: '.$row['user_login'].'<br/>';
+    echo '<hr>';
+}
+
+
+debug($users);
+
+
+
+//echo debug($user);
+//debug($user->getProperties());

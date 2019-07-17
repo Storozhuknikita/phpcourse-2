@@ -27,8 +27,8 @@ class BD implements IBD
         'charset' => 'UTF8'
     ];
 
-    protected function getConnect(){
-
+    protected function getConnect()
+    {
         if(empty($this->connect)){
             $this->connect = new \PDO(
                 $this->getDSN(),
@@ -45,32 +45,34 @@ class BD implements IBD
         return $this->connect;
     }
 
-    private function getDSN(){
-
+    private function getDSN()
+    {
         return sprintf('%s:host=%s;dbname=%s;charset=%s',
             $this->config['driver'], $this->config['host'], $this->config['dbname'], $this->config['charset']
         );
     }
 
 
-    public function query(string $sql, array $params = []) {
-
+    public function quer123y(string $sql, array $params = [])
+    {
         $PDOStatement = $this->getConnect()->prepare($sql);
         $PDOStatement->execute($params);
-        var_dump($PDOStatement);
+        //var_dump($PDOStatement);
         return $PDOStatement;
     }
 
-    public function find(string $sql) {
-
-        echo $sql;
+    public function find(string $sql)
+    {
+        return $this->getConnect()->query($sql);
     }
 
-    public function findAll(string $sql) {
-        echo $sql;
+    public function findAll(string $sql)
+    {
+        return $this->getConnect()->query($sql);
     }
 
-    public function getCount(){
-
+    public function getCount()
+    {
+        echo 'true';
     }
 }

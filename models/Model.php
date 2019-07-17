@@ -26,16 +26,23 @@ abstract class Model {
 
     /**
      * @return mixed
+     * Поиск одной записи
      */
     abstract protected function getTableName();
 
-    public function getOne($id){
+    public function getOne($id)
+    {
         $tableName = $this->getTableName();
         $sql = "SELECT * FROM ($tableName) WHERE user_id = :user_id";
-        return $this->bd->find($sql, [':id' => $id]);
+        return $this->bd->query($sql, [':id' => $id]);
     }
 
-    public function getAll(){
+    /**
+     * @return mixed
+     * Поиск всех записей
+     */
+    public function getAll()
+    {
         $tableName = $this->getTableName();
         $sql = "SELECT * FROM ($tableName)";
         return $this->bd->findAll($sql);
