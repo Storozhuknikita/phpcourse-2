@@ -14,28 +14,31 @@ function debug($text){
 }
 
 use \App\models\User;
-use \App\models\Good;
 use \App\services\BD;
 
 include '../services/Autoload.php';
 
 spl_autoload_register([new Autoload(),'loadClass']);
 
-$user = new User();
+$controllerName = $_GET['c'] ?: 'user';
+$actionName = $_GET['a'];
 
-$users = $user->getAll();
+$controllerClass = 'App\\controllers\\'.ucfirst($controllerName).'Controller';
 
-foreach ($users as $row) {
-    echo 'UserId: '.$row['user_id'].'<br/>';
-    echo 'User Name: '.$row['user_name'].'<br/>';
-    echo 'User Login: '.$row['user_login'].'<br/>';
-    echo '<hr>';
+if(class_exists($controllerClass)){
+    $controller = new $controllerClass;
+    $controller->run($actionName);
 }
 
+/*$user = new User;
 
-debug($users);
+debug($user->getAll());
 
 
+$user->user_name = 'Name';
+$user->user_login = 'FFF';
+$user->user_password = 'Password';
+$user->is_admin = 0;
 
-//echo debug($user);
-//debug($user->getProperties());
+$user->save();
+*/
