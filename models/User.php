@@ -12,7 +12,7 @@ class User extends Model
     public $date;
     public $is_admin;
 
-    protected function getTableName()
+    protected static function getTableName()
     {
         return 'users';
         // TODO: Implement getTableName() method.
@@ -29,6 +29,5 @@ class User extends Model
 
         return $properties;
     }
-
 
 }

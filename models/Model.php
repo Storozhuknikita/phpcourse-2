@@ -1,19 +1,18 @@
 <?php
-
 namespace App\models;
 
 use App\services\BD;
-use App\services\IBD;
 
 /**
  * Class Model
  * @package App\models
+ *
+ * @property int $id
  */
 abstract class Model
 {
-
     /**
-     * @var mixed
+     * @var BD Класс для работы с базой данных
      */
     protected $bd;
 
@@ -26,15 +25,21 @@ abstract class Model
     }
 
     /**
-     * @return mixed
-     * Поиск одной записи
+     * Данный метод должен вернуть название таблицы
+     * @return string
      */
-    abstract protected function getTableName();
+    abstract protected static function getTableName();
 
-    public static function getOne($id)
+    /**
+     * Возращает запись с указанным id
+     *
+     * @param int $id ID Записи таблицы
+     * @return array
+     */
+    public function getOne($id)
     {
         $tableName = static::getTableName();
-        $sql = "SELECT * FROM ($tableName) WHERE id = :id";
+        $sql = "SELECT * FROM {$tableName} WHERE id = :id";
         return BD::getInstance()->queryObject(
             $sql,
             get_called_class(),
@@ -43,65 +48,56 @@ abstract class Model
     }
 
     /**
+     * Получение всех записей таблицы
      * @return mixed
-     * Поиск всех записей
      */
     public static function getAll()
     {
         $tableName = static::getTableName();
-        $sql = "SELECT * FROM ($tableName)";
-        return BD::getInstance()->queryObjects(
-            $sql,
-            get_called_class()
-        );
+        $sql = "SELECT * FROM {$tableName} ";
+        return BD::getInstance()->queryObjects($sql, get_called_class());
     }
+    //INSERT INTO users(fio, login, password) VALUES (:fio, :login, :password)
 
-    /**
-     *
-     */
-    public function insert()
+    protected function insert()
     {
-        $col = [];
+        $columns = [];
         $params = [];
 
         foreach ($this as $key => $value) {
             if ($key == 'bd') {
                 continue;
             }
-            $col[] = $key;
+            $columns[] = $key;
             $params[":{$key}"] = $value;
         }
 
-        $colString = implode(', ', $col);
+        $columnsString = implode(', ', $columns);
         $placeholders = implode(', ', array_keys($params));
-
         $tableName = static::getTableName();
-
-        $sql = "INSERT INTO {$tableName} ({$colString}) VALUES ({$placeholders})";
-
-        var_dump($this->bd);
-
+        $sql = "INSERT INTO {$tableName} ({$columnsString})
+          VALUES ({$placeholders})";
         $this->bd->execute($sql, $params);
-
         $this->id = $this->bd->lastInsertId();
     }
 
+    protected function update() {
 
-    protected function update()
-    {
-        return true;
     }
 
-
-    public function save()
-    {
+    public function save() {
         if (empty($this->id)) {
             $this->insert();
+            return;
         }
-
         $this->update();
-
-        return true;
+        return;
     }
 
+    public function delete()
+    {
+        $tableName = static::getTableName();
+        $sql = "DELETE FROM {$tableName} WHERE id = :id ";
+        $this->bd->execute($sql, [':id' => $this->id]);
+    }
 }

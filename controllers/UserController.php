@@ -4,47 +4,17 @@ namespace App\controllers;
 
 use App\models\User;
 
-class UserController {
-
+class UserController extends Controller
+{
 
     protected $defaultAction = 'users';
     protected $action;
 
-    public function run($action)
-    {
-        $this->action = $action ?: $this->defaultAction;
-        $method = $this->action . 'Action';
-
-        if(method_exists($this, $method)) {
-            $this->$method();
-        }else{
-            echo '404';
-        }
-    }
-
-    public function render($template, $params = [])
-    {
-        $content = $this->renderTemplate($template, $params);
-
-        return $this->renderTemplate('main', [
-            'content' => $content
-        ]);
-    }
-
-    public function renderTemplate($template, $params = []){
-
-        ob_start();
-        extract($params);
-        include '../views/'.$template.'.php';
-        return ob_get_clean();
-
-    }
-
-
     public function userAction()
     {
+        $id = (int)$_GET['id'];
         $params = [
-            'user' => User::getOne(1)
+            'user' => User::getOne($id)
         ];
 
         echo $this->render('user', $params);
@@ -58,6 +28,31 @@ class UserController {
         ];
 
         echo $this->render('users', $params);
+    }
+
+    public function deleteAction(){
+
+        $id = (int)$_GET['id'];
+        $user = User::getOne($id);
+        $user->delete();
+
+        echo $this->render('user', $params);
+
+    }
+
+    public function insertAction()
+    {
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $user = new User();
+            $user->user_name = $_POST['username'];
+            $user->user_login = $_POST['userlogin'];
+            $user->user_password = $_POST['userpassword'];
+            $user->save();
+
+        }
+
+        echo $this->render('userinsert', []);
+
     }
 
 
