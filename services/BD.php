@@ -110,14 +110,28 @@ class BD implements IBD
     }
 
 
-    public function find()
+    /**
+     * Получение одной строки
+     *
+     * @param string $sql
+     * @param array $params
+     * @return array|mixed
+     */
+    public function find(string $sql, array $params = [])
     {
-        return true;
+        return $this->query($sql, $params)->fetch();
     }
 
-    public function findAll()
+    /**
+     * Получение всех строк
+     *
+     * @param string $sql
+     * @param array $params
+     * @return mixed
+     */
+    public function findAll(string $sql, array $params = [])
     {
-            return true;
+        return $this->query($sql, $params)->fetchAll();
     }
 
     public function getCount()

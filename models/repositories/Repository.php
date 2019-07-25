@@ -1,6 +1,7 @@
 <?php
-namespace App\models;
+namespace App\models\repositories;
 
+use App\models\entities\Entity;
 use App\services\BD;
 
 /**
@@ -9,7 +10,7 @@ use App\services\BD;
  *
  * @property int $id
  */
-abstract class Model
+abstract class Repository
 {
     /**
      * @var BD Класс для работы с базой данных
@@ -28,7 +29,9 @@ abstract class Model
      * Данный метод должен вернуть название таблицы
      * @return string
      */
-    abstract protected static function getTableName();
+    abstract protected function getTableName();
+
+    abstract protected function getEntityName();
 
     /**
      * Возращает запись с указанным id
@@ -38,11 +41,11 @@ abstract class Model
      */
     public function getOne($id)
     {
-        $tableName = static::getTableName();
+        $tableName = $this->getTableName();
         $sql = "SELECT * FROM {$tableName} WHERE id = :id";
-        return BD::getInstance()->queryObject(
+        return $this->bd->queryObject(
             $sql,
-            get_called_class(),
+            $this->getEntityName(),
             [':id' => $id]
         );
     }
@@ -51,11 +54,11 @@ abstract class Model
      * Получение всех записей таблицы
      * @return mixed
      */
-    public static function getAll()
+    public  function getAll()
     {
-        $tableName = static::getTableName();
+        $tableName = $this->getTableName();
         $sql = "SELECT * FROM {$tableName} ";
-        return BD::getInstance()->queryObjects($sql, get_called_class());
+        return $this->bd->queryObjects($sql, $this->getEntityName());
     }
     //INSERT INTO users(fio, login, password) VALUES (:fio, :login, :password)
 
@@ -94,10 +97,10 @@ abstract class Model
         return;
     }
 
-    public function delete()
+    public function delete(Entity $entity)
     {
-        $tableName = static::getTableName();
+        $tableName = $this->getTableName();
         $sql = "DELETE FROM {$tableName} WHERE id = :id ";
-        $this->bd->execute($sql, [':id' => $this->id]);
+        $this->bd->execute($sql, [':id' => $entity->id]);
     }
 }
