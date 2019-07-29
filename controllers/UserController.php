@@ -42,9 +42,9 @@ class UserController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $user = new User();
-            $user->fio = $_POST['fio'];
-            $user->login = $_POST['login'];
-            $user->password = $_POST['password'];
+            $user->user_name = $_POST['fio'];
+            $user->user_login = $_POST['login'];
+            $user->user_password = $_POST['password'];
             App::call()->userRepository->save($user);
             return $this->redirect();
         }

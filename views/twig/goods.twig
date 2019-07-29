@@ -3,8 +3,9 @@
 {% block title %}Товары{% endblock %}
 
 {% block body %}
+    <h1>Товары</h1>
     {% for good in goods %}
-        {{ good.name }}
+        {{ good.product_name }}
         <a href="/basket/addBasket?id={{ good.id }}">
             Добавить в корзину
         </a>

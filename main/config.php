@@ -1,6 +1,6 @@
 <?php
 return [
-    'rootName' => $_SERVER['DOCUMENT_ROOT'] .'/../',
+    'rootName' => $_SERVER['DOCUMENT_ROOT'].'/phpcourse-2/',
     'name' => 'Мой магазин',
     'defaultControllerName' => 'user',
 

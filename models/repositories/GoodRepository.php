@@ -13,7 +13,7 @@ class GoodRepository extends Repository
 {
     protected function getTableName()
     {
-        return 'goods';
+        return 'products';
     }
 
     protected function getEntityName()

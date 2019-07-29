@@ -17,7 +17,9 @@ class Request
     {
         session_start();
         // костыль
-        $this->requestString = str_replace('phpcourse-2/public/', $_SERVER['REQUEST_URI'], $this->requestString);
+        $this->requestString = str_replace('phpcourse-2/', '', $_SERVER['REQUEST_URI']);
+        //$this->requestString = $_SERVER['REQUEST_URI'];
+        var_dump($this->requestString);
         $this->parseRequest();
     }
 
