@@ -11,17 +11,11 @@ use App\models\entities\User;
  */
 class UserRepository extends Repository
 {
-    /**
-     * @return string
-     */
     protected function getTableName()
     {
         return 'users';
     }
 
-    /**
-     * @return string
-     */
     protected function getEntityName()
     {
         return User::class;

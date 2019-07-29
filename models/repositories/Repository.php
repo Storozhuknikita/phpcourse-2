@@ -1,6 +1,7 @@
 <?php
 namespace App\models\repositories;
 
+use App\main\App;
 use App\models\entities\Entity;
 use App\services\BD;
 
@@ -22,7 +23,7 @@ abstract class Repository
      */
     public function __construct()
     {
-        $this->bd = BD::getInstance();
+        $this->bd = App::call()->bd;
     }
 
     /**
@@ -62,38 +63,32 @@ abstract class Repository
     }
     //INSERT INTO users(fio, login, password) VALUES (:fio, :login, :password)
 
-    protected function insert()
+    protected function insert(Entity $entity)
     {
-        $columns = [];
-        $params = [];
+        $dataForInsert = $this->getDataForInsert($entity);
 
-        foreach ($this as $key => $value) {
-            if ($key == 'bd') {
-                continue;
-            }
-            $columns[] = $key;
-            $params[":{$key}"] = $value;
-        }
+        $columns = $dataForInsert['columns'];
+        $params = $dataForInsert['params'];
 
         $columnsString = implode(', ', $columns);
         $placeholders = implode(', ', array_keys($params));
-        $tableName = static::getTableName();
+        $tableName = $this->getTableName();
         $sql = "INSERT INTO {$tableName} ({$columnsString})
           VALUES ({$placeholders})";
         $this->bd->execute($sql, $params);
         $this->id = $this->bd->lastInsertId();
     }
 
-    protected function update() {
+    protected function update($entity) {
 
     }
 
-    public function save() {
+    public function save(Entity $entity) {
         if (empty($this->id)) {
-            $this->insert();
+            $this->insert($entity);
             return;
         }
-        $this->update();
+        $this->update($entity);
         return;
     }
 
@@ -102,5 +97,22 @@ abstract class Repository
         $tableName = $this->getTableName();
         $sql = "DELETE FROM {$tableName} WHERE id = :id ";
         $this->bd->execute($sql, [':id' => $entity->id]);
+    }
+
+    protected function getDataForInsert(Entity $entity)
+    {
+        $columns = [];
+        $params = [];
+        foreach ($entity as $key => $value) {
+            if ($key == 'id' || is_null($value)) {
+                continue;
+            }
+            $columns[] = $key;
+            $params[":{$key}"] = $value;
+        }
+        return [
+            'columns' => $columns,
+            'params' => $params,
+        ];
     }
 }

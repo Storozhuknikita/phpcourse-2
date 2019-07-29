@@ -1,3 +1,9 @@
+{% extends 'layouts/main.twig' %}
 
-{{ user.user_name }} <br/>
-{{ user.date | date("d/m/y") }}
+{% block title %}Пользователь {{ user.fio }}{% endblock %}
+
+{% block body %}
+    {{user.fio}}
+    {{user.date | date("d/m/Y")}}
+    <hr>
+{% endblock %}

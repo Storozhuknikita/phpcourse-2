@@ -15,33 +15,12 @@ class Request
      */
     public function __construct()
     {
+        session_start();
         // костыль
         $this->requestString = str_replace('phpcourse-2/public/', $_SERVER['REQUEST_URI'], $this->requestString);
         $this->parseRequest();
     }
 
-//    public function getError()
-//    {
-//        try {
-//            $request = $this->getRequest();
-////            $this->runJob();
-//        } catch (\Exception $exception) {
-//            throw new newException($exception->getMessage());
-//        } finally {
-//            echo 'Я раюотаю!';
-//        }
-//    }
-//
-//    private function getRequest()
-//    {
-//        throw new \Exception('asd');
-//        return 'Ok';
-//    }
-
-
-    /**
-     *
-     */
     private function parseRequest()
     {
         $pattern = "#(?P<controller>\w+)[/]?(?P<action>\w+)?[/]?[?]?(?P<params>.*)#ui";
@@ -54,7 +33,7 @@ class Request
                 'post' => $_POST,
             ];
 
-            $this->id = (int)$_GET['id'];
+            $this->id = (int)$this->getParams('get', 'id');
         }
     }
 
@@ -114,35 +93,28 @@ class Request
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id): void
+    public function getParams($method, $key = null)
     {
-        $this->id = $id;
+        if (empty($key)) {
+            return $this->params[$method];
+        }
+        return array_key_exists($key, $this->params[$method])
+            ? $this->params[$method][$key]
+            : null;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getParams()
+    public function getSession($key = null)
     {
-        return $this->params;
+        if (empty($key)) {
+            return $_SESSION;
+        }
+        return array_key_exists($key, $_SESSION)
+            ? $_SESSION[$key]
+            : [];
     }
 
-    /**
-     * @param mixed $params
-     */
-    public function setParams($params): void
+    public function setSession($key, $value)
     {
-        $this->params = $params;
+        $_SESSION[$key] = $value;
     }
 }
-
-//class newException extends \Exception
-//{
-//    public function dumpError()
-//    {
-//        var_dump(parent::getMessage());
-//    }
-//}

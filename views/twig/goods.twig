@@ -1,0 +1,13 @@
+{% extends 'layouts/main.twig' %}
+
+{% block title %}Товары{% endblock %}
+
+{% block body %}
+    {% for good in goods %}
+        {{ good.name }}
+        <a href="/basket/addBasket?id={{ good.id }}">
+            Добавить в корзину
+        </a>
+        <hr>
+    {% endfor %}
+{% endblock %}

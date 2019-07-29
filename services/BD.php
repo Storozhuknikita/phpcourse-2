@@ -1,114 +1,89 @@
 <?php
-
 namespace App\services;
-
-use App\models\User;
-use App\services\IBD;
 use App\traits\TSingleton;
-
-
 class BD implements IBD
 {
+    private $config;
 
-    use TSingleton;
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }
 
+    /**
+     * @var \PDO|null
+     */
     protected $connect = null;
-    private static $items;
 
     /**
-     * @var array Config
-     */
-
-    /**
-     * @var array
-     */
-    private $config = [
-        'user' => 'root',
-        'password' => '1VZVMFZ8q!',
-        'driver' => 'mysql',
-        'dbname' => 'shop',
-        'host' => 'localhost',
-        'charset' => 'UTF8'
-    ];
-
-    /**
+     * Возвращает только один коннект с базой - объект PDO
      * @return \PDO|null
      */
     protected function getConnect()
     {
-        if(empty($this->connect)){
+        if (empty($this->connect)) {
             $this->connect = new \PDO(
                 $this->getDSN(),
                 $this->config['user'],
-                $this->config['password']
+                $this->config['pass']
             );
-
             $this->connect->setAttribute(
                 \PDO::ATTR_DEFAULT_FETCH_MODE,
                 \PDO::FETCH_ASSOC
             );
         }
-
         return $this->connect;
     }
 
     /**
+     * Создание строки - настройки для подключения
      * @return string
      */
     private function getDSN()
     {
-        return sprintf('%s:host=%s;dbname=%s;charset=%s',
-            $this->config['driver'], $this->config['host'], $this->config['dbname'], $this->config['charset']
+        //'mysql:host=localhost;dbname=DB;charset=UTF8'
+        return sprintf(
+            '%s:host=%s;dbname=%s;charset=%s',
+            $this->config['driver'],
+            $this->config['host'],
+            $this->config['bd'],
+            $this->config['charset']
         );
     }
 
     /**
-     * @param string $sql
-     * @param array $params
-     * @return bool|\PDOStatement
+     * Выполнение запроса
+     *
+     * @param string $sql 'SELECT * FROM users WHERE id = :id'
+     * @param array $params [':id' => 123]
+     * @return \PDOStatement
      */
-    public function query(string $sql, array $params = [])
+    private function query(string $sql, array $params = [])
     {
         $PDOStatement = $this->getConnect()->prepare($sql);
         $PDOStatement->execute($params);
-        //var_dump($PDOStatement);
         return $PDOStatement;
     }
 
-    /**
-     * @param string $sql
-     * @param $class
-     * @param array $params
-     * @return mixed
-     */
     public function queryObject(string $sql, $class, array $params = [])
     {
         $PDOStatement = $this->query($sql, $params);
-        $PDOStatement->setFetchMode(\PDO::FETCH_CLASS, $class);
+        $PDOStatement->setFetchMode(
+            \PDO::FETCH_CLASS,
+            $class
+        );
         return $PDOStatement->fetch();
     }
 
-    /**
-     * @param string $sql
-     * @param $class
-     * @param array $params
-     * @return mixed
-     */
     public function queryObjects(string $sql, $class, array $params = [])
     {
         $PDOStatement = $this->query($sql, $params);
-        $PDOStatement->setFetchMode(\PDO::FETCH_CLASS, $class);
+        $PDOStatement->setFetchMode(
+            \PDO::FETCH_CLASS,
+            $class
+        );
         return $PDOStatement->fetchAll();
     }
-
-    /**
-     * @return string
-     */
-    public function lastInsertId()
-    {
-        return $this->getConnect()->lastInsertId();
-    }
-
 
     /**
      * Получение одной строки
@@ -134,13 +109,19 @@ class BD implements IBD
         return $this->query($sql, $params)->fetchAll();
     }
 
-    public function getCount()
-    {
-        echo 'true';
-    }
-
-    public function execute($sql, $params)
+    /**
+     * Выполнение безответного запроса
+     *
+     * @param string $sql
+     * @param array $params
+     */
+    public function execute(string $sql, array $params = [])
     {
         $this->query($sql, $params);
+    }
+
+    public function lastInsertId()
+    {
+        return $this->getConnect()->lastInsertId();
     }
 }

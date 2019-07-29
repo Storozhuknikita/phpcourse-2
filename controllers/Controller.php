@@ -30,19 +30,19 @@ abstract class Controller
 
     public function render($template, $params = [])
     {
-        $content = $this->renderTmpl($template, $params);
-        return $this->renderTmpl('layouts/main', [
-            'content' => $content
-        ]);
-    }
-
-    public function renderTmpl($template, $params = [])
-    {
         return $this->renderer->renderTmpl($template, $params);
     }
 
     protected function getId()
     {
         return $this->request->getId();
+    }
+
+    protected function redirect($path = '')
+    {
+        if (empty($path)) {
+            $path = $_SERVER['HTTP_REFERER'];
+        }
+        return header('Location:' . $path);
     }
 }
