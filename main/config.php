@@ -18,6 +18,9 @@ return [
         ],
         'userRepository' => [
             'class' => \App\models\repositories\UserRepository::class
+        ],
+        'bookingRepository' => [
+            'class' => \App\models\repositories\BookingRepository::class
         ]
     ],
 ];

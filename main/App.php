@@ -2,6 +2,7 @@
 
 namespace App\main;
 
+use App\models\repositories\BookingRepository;
 use App\models\repositories\UserRepository;
 use App\services\BD;
 use App\traits\TSingleton;
@@ -11,6 +12,7 @@ use App\traits\TSingleton;
  * @package App\main
  * @property BD bd
  * @property UserRepository userRepository
+ * @property BookingRepository bookingRepository
  */
 class App
 {

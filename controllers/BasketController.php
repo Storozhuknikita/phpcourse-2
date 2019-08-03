@@ -11,6 +11,7 @@ class BasketController extends Controller
 
     public function addBasketAction()
     {
+
         $id = $this->getId();
         if (empty($id)) {
             return $this->redirect();

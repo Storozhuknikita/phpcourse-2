@@ -115,4 +115,14 @@ abstract class Repository
             'params' => $params,
         ];
     }
+
+    protected function queryObject($sql, $params)
+    {
+        return $this->bd->queryObject($sql, $this->getEntityName(), $params);
+    }
+
+    protected function queryObjects($sql, $params)
+    {
+        return $this->bd->queryObjects($sql, $this->getEntityName(), $params);
+    }
 }

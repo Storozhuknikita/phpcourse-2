@@ -19,7 +19,7 @@ class Request
         // костыль
         $this->requestString = str_replace('phpcourse-2/', '', $_SERVER['REQUEST_URI']);
         //$this->requestString = $_SERVER['REQUEST_URI'];
-        var_dump($this->requestString);
+        //var_dump($this->requestString);
         $this->parseRequest();
     }
 

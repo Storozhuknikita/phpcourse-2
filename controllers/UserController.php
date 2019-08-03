@@ -1,4 +1,5 @@
 <?php
+
 namespace App\controllers;
 
 use App\main\App;
@@ -24,7 +25,7 @@ class UserController extends Controller
     public function usersAction()
     {
         $params = [
-            'users' =>  App::call()->userRepository->getAll()
+            'users' => App::call()->userRepository->getAll()
         ];
 
         echo $this->render('users', $params);
@@ -49,5 +50,10 @@ class UserController extends Controller
             return $this->redirect();
         }
         echo $this->render('userInsert', []);
+    }
+
+    public function bookingAction()
+    {
+        var_dump(App::call()->bookingRepository->getAllBooking(1));
     }
 }
