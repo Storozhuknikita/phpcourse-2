@@ -1,0 +1,14 @@
+{% extends 'layouts/main.twig' %}
+
+{% block title %}Товары{% endblock %}
+
+{% block body %}
+    <h1>Товары</h1>
+    {% for good in goods %}
+        {{ good.product_name }}
+        <a href="http://localhost/phpcourse-2/basket/addBasket?id={{ good.id }}">
+            Добавить в корзину
+        </a>
+        <hr>
+    {% endfor %}
+{% endblock %}
