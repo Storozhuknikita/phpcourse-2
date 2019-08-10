@@ -1,0 +1,12 @@
+
+{% for user in users %}
+    <a href="/user/user?id={{user.id}}">
+        {{ user.id }} / {{ user.user_name }} / {{ user.is_admin }}
+    </a>
+    {%  if user.is_admin == 0  %}
+    <a href="/user/delete?id={{ user.id }}">
+    {% endif %}
+    <br/>
+{% else %}
+    <li><em>User not found</em></li>
+{% endfor %}

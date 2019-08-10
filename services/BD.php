@@ -2,6 +2,7 @@
 
 namespace App\services;
 
+use App\models\User;
 use App\services\IBD;
 use App\traits\TSingleton;
 
@@ -18,6 +19,9 @@ class BD implements IBD
      * @var array Config
      */
 
+    /**
+     * @var array
+     */
     private $config = [
         'user' => 'root',
         'password' => '1VZVMFZ8q!',
@@ -27,6 +31,9 @@ class BD implements IBD
         'charset' => 'UTF8'
     ];
 
+    /**
+     * @return \PDO|null
+     */
     protected function getConnect()
     {
         if(empty($this->connect)){
@@ -45,6 +52,9 @@ class BD implements IBD
         return $this->connect;
     }
 
+    /**
+     * @return string
+     */
     private function getDSN()
     {
         return sprintf('%s:host=%s;dbname=%s;charset=%s',
@@ -52,8 +62,12 @@ class BD implements IBD
         );
     }
 
-
-    public function quer123y(string $sql, array $params = [])
+    /**
+     * @param string $sql
+     * @param array $params
+     * @return bool|\PDOStatement
+     */
+    public function query(string $sql, array $params = [])
     {
         $PDOStatement = $this->getConnect()->prepare($sql);
         $PDOStatement->execute($params);
@@ -61,18 +75,72 @@ class BD implements IBD
         return $PDOStatement;
     }
 
-    public function find(string $sql)
+    /**
+     * @param string $sql
+     * @param $class
+     * @param array $params
+     * @return mixed
+     */
+    public function queryObject(string $sql, $class, array $params = [])
     {
-        return $this->getConnect()->query($sql);
+        $PDOStatement = $this->query($sql, $params);
+        $PDOStatement->setFetchMode(\PDO::FETCH_CLASS, $class);
+        return $PDOStatement->fetch();
     }
 
-    public function findAll(string $sql)
+    /**
+     * @param string $sql
+     * @param $class
+     * @param array $params
+     * @return mixed
+     */
+    public function queryObjects(string $sql, $class, array $params = [])
     {
-        return $this->getConnect()->query($sql);
+        $PDOStatement = $this->query($sql, $params);
+        $PDOStatement->setFetchMode(\PDO::FETCH_CLASS, $class);
+        return $PDOStatement->fetchAll();
+    }
+
+    /**
+     * @return string
+     */
+    public function lastInsertId()
+    {
+        return $this->getConnect()->lastInsertId();
+    }
+
+
+    /**
+     * Получение одной строки
+     *
+     * @param string $sql
+     * @param array $params
+     * @return array|mixed
+     */
+    public function find(string $sql, array $params = [])
+    {
+        return $this->query($sql, $params)->fetch();
+    }
+
+    /**
+     * Получение всех строк
+     *
+     * @param string $sql
+     * @param array $params
+     * @return mixed
+     */
+    public function findAll(string $sql, array $params = [])
+    {
+        return $this->query($sql, $params)->fetchAll();
     }
 
     public function getCount()
     {
         echo 'true';
+    }
+
+    public function execute($sql, $params)
+    {
+        $this->query($sql, $params);
     }
 }
